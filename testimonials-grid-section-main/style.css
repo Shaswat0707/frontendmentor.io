@@ -1,0 +1,204 @@
+:root {
+  --clr-primary-hsl-grayish-blue: 217, 19%, 35%;
+  --clr-primary-hsl-violet: 263, 55%, 52%;
+  --clr-primary-hsl-blackish-blue: 219, 29%, 14%;
+  --clr-primary-hsl-white: 0, 0%, 100%;
+
+  --clr-secondary-hsl-violet: 264, 82%, 70%;
+
+  --clr-neutral-hsl-gray: 0, 0%, 81%;
+  --clr-neutral-hsl-blue: 210, 46%, 95%;
+
+  --clr-primary-violet: hsl(var(--clr-primary-hsl-violet));
+  --clr-primary-grayish-blue: hsl(var(--clr-primary-hsl-grayish-blue));
+  --clr-primary-blackish-blue: hsl(var(--clr-primary-hsl-blackish-blue));
+  --clr-primary-white: hsl(var(--clr-primary-hsl-white));
+
+  --clr-secondary-violet: hsl(var(--clr-secondary-hsl-violet));
+
+  --clr-neutral-gray: hsl(var(--clr-neutral-hsl-gray));
+  --clr-neutral-blue: hsl(var(--clr-neutral-hsl-blue));
+
+  --ff-body: "Barlow Semi Condensed", sans-serif;
+
+  --fw-regular: 500;
+  --fw-bold: 600;
+}
+
+/*
+  1. Use a more-intuitive box-sizing model.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+/*
+  2. Remove default margin
+*/
+* {
+  margin: 0;
+}
+/*
+  Typographic tweaks!
+  3. Add accessible line-height
+  4. Improve text rendering
+*/
+body {
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+/*
+  5. Improve media defaults
+*/
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+/*
+  6. Remove built-in form typography styles
+*/
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+/*
+  7. Avoid text overflows
+*/
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+  font-size: inherit;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1;
+}
+
+body {
+  font-family: var(--ff-body);
+  font-size: 0.875rem;
+  font-weight: var(--fw-regular);
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  background-color: var(--clr-neutral-gray);
+}
+
+main {
+  display: grid;
+  gap: 1.5rem;
+  padding: 5rem 2rem;
+  margin-block: auto;
+  justify-content: center;
+  grid-template-areas:
+    "violet-large"
+    "gray-small"
+    "white-small"
+    "dark-blue-large"
+    "white-large";
+}
+
+@media (min-width: 50em) {
+  main {
+    padding: 5vh 17vw;
+    grid-template-areas:
+      "violet-large violet-large gray-small white-large"
+      "white-small dark-blue-large dark-blue-large white-large";
+  }
+}
+
+section {
+  --bg-color: var(--clr-primary-hsl-white);
+  --border-color: var(--clr-primary-hsl-white);
+  --color: var(--clr-primary-hsl-grayish-blue);
+
+  display: grid;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background-color: hsl(var(--bg-color));
+  color: hsl(var(--color));
+  box-shadow: 2.5rem 3.75rem 3rem -3rem hsla(var(--clr-primary-hsl-grayish-blue), 25%);
+}
+
+section[data-type="violet"] {
+  --bg-color: var(--clr-primary-hsl-violet);
+  --color: var(--clr-primary-hsl-white);
+  --border-color: var(--clr-secondary-hsl-violet);
+  position: relative;
+  grid-area: violet-large;
+  z-index: 1;
+}
+
+section[data-type="violet"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 15%;
+  width: 104px;
+  height: 102px;
+  background-image: url("images/bg-pattern-quotation.svg");
+  z-index: -1;
+}
+
+section[data-type="gray"] {
+  --bg-color: var(--clr-primary-hsl-grayish-blue);
+  --color: var(--clr-primary-hsl-white);
+  --border-color: var(--clr-primary-grayish-blue);
+  grid-area: gray-small;
+}
+
+section[data-type="dark-blue"] {
+  --bg-color: var(--clr-primary-hsl-blackish-blue);
+  --color: var(--clr-primary-hsl-white);
+  --border-color: var(--clr-primary-hsl-violet);
+  grid-area: dark-blue-large;
+}
+
+section[data-type="white-small"] {
+  grid-area: white-small;
+}
+
+section[data-type="white-large"] {
+  grid-area: white-large;
+}
+
+section .heading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+section .heading .image img {
+  border-radius: 50%;
+  border: 0.15rem solid hsl(var(--border-color));
+  width: 2.5em;
+  aspect-ratio: 1;
+}
+
+section .heading .person .designation {
+  color: hsla(var(--color), 0.5);
+}
+
+section .highlight {
+  font-weight: var(--fw-bold);
+  font-size: 1.25em;
+}
+
+section .quote {
+  color: hsl(var(--color), 0.7);
+}
