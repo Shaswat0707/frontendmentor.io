@@ -49,15 +49,13 @@ const typingText = document.querySelector("span.typing");
 const textLength = typingText.innerText.length;
 const text = typingText.innerText.split("");
 typingText.innerText = "";
-let iterator = 0,
-  flagForTimeout = 0;
+let iterator = 0;
 
 document.addEventListener("typing", () => {
   const interval = setInterval(() => {
     if (iterator >= 0 && iterator <= textLength - 1) {
       typingText.innerText += text[iterator++];
-    }
-    if (iterator === textLength) {
+    } else {
       document.dispatchEvent(pauseDeleting);
       clearInterval(interval);
     }
@@ -66,7 +64,6 @@ document.addEventListener("typing", () => {
 
 document.addEventListener("pauseDeleting", () => {
   const timeout = setTimeout(() => {
-    flagForTimeout = 1;
     document.dispatchEvent(deleting);
     clearTimeout(timeout);
   }, 1000);
@@ -74,12 +71,10 @@ document.addEventListener("pauseDeleting", () => {
 
 document.addEventListener("deleting", () => {
   const interval = setInterval(() => {
-    if (flagForTimeout === 1 && typingText.innerText.length > 0) {
+    if (typingText.innerText.length > 0) {
       typingText.innerText = typingText.innerText.slice(0, -1);
-    }
-    if (typingText.innerText.length === 0) {
+    } else {
       iterator = 0;
-      flagForTimeout = 0;
       document.dispatchEvent(pauseTyping);
       clearInterval(interval);
     }
@@ -88,7 +83,6 @@ document.addEventListener("deleting", () => {
 
 document.addEventListener("pauseTyping", () => {
   const timeout = setTimeout(() => {
-    flagForTimeout = 1;
     document.dispatchEvent(typing);
     clearTimeout(timeout);
   }, 500);
