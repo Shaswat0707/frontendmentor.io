@@ -1,5 +1,4 @@
 const blob = document.getElementById("blob");
-const typingText = document.querySelector("span.typing");
 let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 document.body.onmousemove = (event) => {
@@ -42,9 +41,11 @@ for (let i = 0; i < elements.length; i++) {
 }
 
 const typing = new Event("typing");
-const pause = new Event("pause");
-const backspacing = new Event("backspacing");
+const pauseDeleting = new Event("pauseDeleting");
+const deleting = new Event("deleting");
+const pauseTyping = new Event("pauseTyping");
 
+const typingText = document.querySelector("span.typing");
 const textLength = typingText.innerText.length;
 const text = typingText.innerText.split("");
 typingText.innerText = "";
@@ -57,21 +58,21 @@ document.addEventListener("typing", () => {
       typingText.innerText += text[iterator++];
     }
     if (iterator === textLength) {
-      document.dispatchEvent(pause);
+      document.dispatchEvent(pauseDeleting);
       clearInterval(interval);
     }
   }, 300);
 });
 
-document.addEventListener("pause", () => {
+document.addEventListener("pauseDeleting", () => {
   const timeout = setTimeout(() => {
     flagForTimeout = 1;
-    document.dispatchEvent(backspacing);
+    document.dispatchEvent(deleting);
     clearTimeout(timeout);
   }, 1000);
 });
 
-document.addEventListener("backspacing", () => {
+document.addEventListener("deleting", () => {
   const interval = setInterval(() => {
     if (flagForTimeout === 1 && typingText.innerText.length > 0) {
       typingText.innerText = typingText.innerText.slice(0, -1);
@@ -79,38 +80,20 @@ document.addEventListener("backspacing", () => {
     if (typingText.innerText.length === 0) {
       iterator = 0;
       flagForTimeout = 0;
-      document.dispatchEvent(typing);
+      document.dispatchEvent(pauseTyping);
       clearInterval(interval);
     }
   }, 200);
 });
 
+document.addEventListener("pauseTyping", () => {
+  const timeout = setTimeout(() => {
+    flagForTimeout = 1;
+    document.dispatchEvent(typing);
+    clearTimeout(timeout);
+  }, 500);
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   document.dispatchEvent(typing);
-  // const textLength = typingText.innerText.length;
-  // const text = typingText.innerText.split("");
-  // typingText.innerText = "";
-  // let iterator = 0,
-  //   flagForTimeout = 0;
-  // setInterval(() => {
-  //   if (iterator >= 0 && iterator <= textLength - 1) {
-  //     typingText.innerText += text[iterator++];
-  //   }
-  // }, 300);
-  // setInterval(() => {
-  //   if (iterator === textLength) {
-  //     let timeOut;
-  //     clearTimeout(timeOut);
-  //     timeOut = setTimeout(() => {
-  //       flagForTimeout = 1;
-  //     }, 1000);
-  //   }
-  //   if (flagForTimeout === 1 && typingText.innerText.length > 0) {
-  //     typingText.innerText = typingText.innerText.slice(0, -1);
-  //   }
-  //   if (typingText.innerText.length === 0) {
-  //     iterator = 0;
-  //     flagForTimeout = 0;
-  //   }
-  // }, 200);
 });
