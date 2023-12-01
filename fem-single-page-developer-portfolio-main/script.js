@@ -40,33 +40,36 @@ for (let i = 0; i < elements.length; i++) {
   };
 }
 
-const typing = new Event("typing");
-const pauseDeleting = new Event("pauseDeleting");
-const deleting = new Event("deleting");
-const pauseTyping = new Event("pauseTyping");
+const typing = new CustomEvent("typing");
+const deleting = new CustomEvent("deleting");
 
 const typingText = document.querySelector("span.typing");
+const cursor = document.querySelector("span.cursor");
 const textLength = typingText.innerText.length;
 const text = typingText.innerText.split("");
 typingText.innerText = "";
 let iterator = 0;
+
+document.addEventListener("pause", (e) => {
+  const timeout = setTimeout(() => {
+    document.dispatchEvent(e.detail.nextEvent);
+    clearTimeout(timeout);
+  }, e.detail.duration);
+});
 
 document.addEventListener("typing", () => {
   const interval = setInterval(() => {
     if (iterator >= 0 && iterator <= textLength - 1) {
       typingText.innerText += text[iterator++];
     } else {
-      document.dispatchEvent(pauseDeleting);
+      document.dispatchEvent(
+        new CustomEvent("pause", {
+          detail: { nextEvent: deleting, duration: 1000 },
+        })
+      );
       clearInterval(interval);
     }
   }, 300);
-});
-
-document.addEventListener("pauseDeleting", () => {
-  const timeout = setTimeout(() => {
-    document.dispatchEvent(deleting);
-    clearTimeout(timeout);
-  }, 1000);
 });
 
 document.addEventListener("deleting", () => {
@@ -75,17 +78,14 @@ document.addEventListener("deleting", () => {
       typingText.innerText = typingText.innerText.slice(0, -1);
     } else {
       iterator = 0;
-      document.dispatchEvent(pauseTyping);
+      document.dispatchEvent(
+        new CustomEvent("pause", {
+          detail: { nextEvent: typing, duration: 500 },
+        })
+      );
       clearInterval(interval);
     }
   }, 200);
-});
-
-document.addEventListener("pauseTyping", () => {
-  const timeout = setTimeout(() => {
-    document.dispatchEvent(typing);
-    clearTimeout(timeout);
-  }, 500);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
