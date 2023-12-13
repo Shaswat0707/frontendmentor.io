@@ -4,6 +4,7 @@
   --bg-body: hsl(0, 0%, 8%);
   --bg-body2: hsl(0, 0%, 14%);
   --accent: hsl(153, 71%, 59%);
+  --clr-accent: 153 71% 59%;
   --text1: hsl(0, 0%, 100%);
   --text2: hsl(0, 0%, 85%);
   --invalid: hsl(7, 100%, 68%);
@@ -20,8 +21,9 @@
   --transition: 250ms ease-in-out;
 }
 
-* {
+section {
   z-index: 3;
+  position: relative;
 }
 
 html,
@@ -167,7 +169,7 @@ svg {
 
 .header {
   position: relative;
-  z-index: 1;
+  z-index: 5;
   margin-block-start: 20px;
 }
 
@@ -186,6 +188,10 @@ svg {
   color: var(--text1);
   text-decoration: none;
   flex: 1 0 100%;
+}
+
+.header__social > svg {
+  filter: drop-shadow(0px 0px 0.5rem white);
 }
 
 .header__social > svg > path {
@@ -239,6 +245,117 @@ svg {
   translate: -50%;
   width: 174px;
   height: auto;
+}
+
+.hero__screen-wrapper {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50%;
+  width: 174px;
+  aspect-ratio: 10 / 16;
+  background: hsl(var(--clr-accent) / 0.15);
+  border: 2px solid var(--accent);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.hero__screen-overlay {
+  background-size: 100% 9px !important;
+  background: linear-gradient(
+    hsl(var(--clr-accent) / 0.15),
+    hsl(var(--clr-accent) / 0.15) 3px,
+    transparent 3px,
+    transparent 9px
+  );
+  animation: pan-overlay 22s infinite linear;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 2;
+  left: 0px;
+  top: 0px;
+}
+
+@keyframes pan-overlay {
+  from {
+    background-position: 0% 0%;
+  }
+
+  to {
+    background-position: 0% -100%;
+  }
+}
+
+.hero__screen-image {
+  background-image: url("https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  left: 0px;
+  top: 0px;
+  background-size: 300%;
+  background-position: 0% 0%;
+  filter: sepia(100%) hue-rotate(160deg);
+  opacity: 0.6;
+  animation: pan-image 15s linear infinite;
+}
+
+@keyframes pan-image {
+  0% {
+    background-position: 36% 42%;
+    background-size: 200%;
+  }
+
+  20% {
+    background-position: 30% 35%;
+    background-size: 200%;
+  }
+
+  20.0001% {
+    /* -- View 2 -- */
+    background-position: 60% 85%;
+    background-size: 500%;
+  }
+
+  40% {
+    background-position: 49% 81%;
+    background-size: 500%;
+  }
+
+  40.0001% {
+    /* -- View 3 -- */
+    background-position: 80% 42%;
+    background-size: 300%;
+  }
+
+  60% {
+    background-position: 84% 33%;
+    background-size: 300%;
+  }
+
+  60.0001% {
+    /* -- View 4 -- */
+    background-position: 0% 0%;
+    background-size: 300%;
+  }
+
+  80% {
+    background-position: 15% 4%;
+    background-size: 300%;
+  }
+
+  80.0001% {
+    /* -- View 5 -- */
+    background-position: 80% 10%;
+    background-size: 300%;
+  }
+
+  100% {
+    background-position: 72% 14%;
+    background-size: 300%;
+  }
 }
 
 .hero__rings {
@@ -312,12 +429,26 @@ h1 > span.cursor {
     order: 2;
   }
 
+  .hero__content .hero__screen {
+    order: 2;
+  }
+
   .hero__image {
     position: relative;
     width: 42vw;
     max-width: 445px;
     /* width: 322px; */
     height: auto;
+    left: auto;
+    right: 0;
+    translate: 0;
+  }
+
+  .hero__screen-wrapper {
+    position: relative;
+    width: 42vw;
+    max-width: 445px;
+    /* width: 322px; */
     left: auto;
     right: 0;
     translate: 0;
@@ -380,7 +511,15 @@ h1 > span.cursor {
     margin-left: -80px;
   }
 
+  .hero__content .hero__screen {
+    margin-left: -80px;
+  }
+
   .hero__image {
+    margin-block-start: -199px;
+  }
+
+  .hero__screen-wrapper {
     margin-block-start: -199px;
   }
 
@@ -797,7 +936,7 @@ footer {
   animation: rotate 20s infinite;
   filter: blur(300px);
   -webkit-filter: blur(300px);
-  z-index: 1;
+  z-index: -1;
 }
 
 @keyframes rotate {
@@ -818,4 +957,23 @@ footer {
 
 .capitalize {
   text-transform: capitalize;
+}
+
+.hidden {
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateX(-100%);
+  transition: all 1s;
+}
+
+@media (prefers-reduced-motion) {
+  .hidden {
+    transition: none;
+  }
+}
+
+.show {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateX(0%);
 }

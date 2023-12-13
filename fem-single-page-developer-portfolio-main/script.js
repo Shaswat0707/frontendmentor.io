@@ -1,6 +1,7 @@
 const blob = document.getElementById("blob");
 let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+//mouse blob
 document.body.onmousemove = (event) => {
   const { pageX, pageY } = event;
   blob.animate(
@@ -12,6 +13,7 @@ document.body.onmousemove = (event) => {
   );
 };
 
+//hover randomize animation
 const elements = document.querySelectorAll(".randomize");
 
 for (let i = 0; i < elements.length; i++) {
@@ -40,6 +42,7 @@ for (let i = 0; i < elements.length; i++) {
   };
 }
 
+//typing animation
 const typing = new CustomEvent("typing");
 const deleting = new CustomEvent("deleting");
 
@@ -91,3 +94,15 @@ document.addEventListener("deleting", () => {
 document.addEventListener("DOMContentLoaded", () => {
   document.dispatchEvent(typing);
 });
+
+//scroll animation
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("show");
+    }
+  });
+});
+
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el) => observer.observe(el));
