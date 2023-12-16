@@ -43,52 +43,58 @@ for (let i = 0; i < elements.length; i++) {
 }
 
 //typing animation
-const typing = new CustomEvent("typing");
-const deleting = new CustomEvent("deleting");
+const typing = new Event("typing");
+const pauseDeleting = new Event("pauseDeleting");
+const deleting = new Event("deleting");
+const pauseTyping = new Event("pauseTyping");
 
 const typingText = document.querySelector("span.typing");
-const cursor = document.querySelector("span.cursor");
 const textLength = typingText.innerText.length;
 const text = typingText.innerText.split("");
 typingText.innerText = "";
-let iterator = 0;
-
-document.addEventListener("pause", (e) => {
-  const timeout = setTimeout(() => {
-    document.dispatchEvent(e.detail.nextEvent);
-    clearTimeout(timeout);
-  }, e.detail.duration);
-});
+let iterator = 0,
+  flagForTimeout = 0;
 
 document.addEventListener("typing", () => {
   const interval = setInterval(() => {
     if (iterator >= 0 && iterator <= textLength - 1) {
       typingText.innerText += text[iterator++];
-    } else {
-      document.dispatchEvent(
-        new CustomEvent("pause", {
-          detail: { nextEvent: deleting, duration: 1000 },
-        })
-      );
+    }
+    if (iterator === textLength) {
+      document.dispatchEvent(pauseDeleting);
       clearInterval(interval);
     }
   }, 300);
 });
 
+document.addEventListener("pauseDeleting", () => {
+  const timeout = setTimeout(() => {
+    flagForTimeout = 1;
+    document.dispatchEvent(deleting);
+    clearTimeout(timeout);
+  }, 1000);
+});
+
 document.addEventListener("deleting", () => {
   const interval = setInterval(() => {
-    if (typingText.innerText.length > 0) {
+    if (flagForTimeout === 1 && typingText.innerText.length > 0) {
       typingText.innerText = typingText.innerText.slice(0, -1);
-    } else {
+    }
+    if (typingText.innerText.length === 0) {
       iterator = 0;
-      document.dispatchEvent(
-        new CustomEvent("pause", {
-          detail: { nextEvent: typing, duration: 500 },
-        })
-      );
+      flagForTimeout = 0;
+      document.dispatchEvent(pauseTyping);
       clearInterval(interval);
     }
   }, 200);
+});
+
+document.addEventListener("pauseTyping", () => {
+  const timeout = setTimeout(() => {
+    flagForTimeout = 1;
+    document.dispatchEvent(typing);
+    clearTimeout(timeout);
+  }, 500);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
